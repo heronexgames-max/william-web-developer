@@ -17,6 +17,8 @@ export default async function handler(req, res) {
     email: limit(body.email, 200),
     service: limit(body.type, 80),
     message: limit(body.message, 5000),
+    currency: limit(body.currency, 10),
+    currencyName: limit(body.currencyName, 80),
   };
 
   if (!enquiry.name || !enquiry.email || !enquiry.message) {
@@ -46,11 +48,13 @@ export default async function handler(req, res) {
       from,
       to: [to],
       reply_to: enquiry.email,
-      subject: `New website enquiry from ${enquiry.name}`,
+      subject: `New website enquiry from ${enquiry.name} (${enquiry.currency || 'ZAR'})`,
       text: [
         `Name: ${enquiry.name}`,
         `Email: ${enquiry.email}`,
         `Service: ${enquiry.service || 'Not specified'}`,
+        `Currency selected: ${enquiry.currencyName || enquiry.currency || 'South African Rand (ZAR)'}`,
+        `Currency code: ${enquiry.currency || 'ZAR'}`, 
         '',
         enquiry.message,
       ].join('\n'),
